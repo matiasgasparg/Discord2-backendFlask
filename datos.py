@@ -39,9 +39,9 @@ def obtener_usuarios():
         cursor.execute(sql)
 
         usuarios = []
-        for (id, name,username,email,password,datebirth) in cursor:
+        for (id_usuario, name,username,email,password,datebirth) in cursor:
             usuario = {
-                'id': id,
+                'id_usuario': id_usuario,
                 'name': name,
                 'username': username,
                 'email':email,
@@ -59,13 +59,13 @@ def obtener_usuarios():
         return []
 
 # Función para obtener un usuario por su ID de la base de datos
-def obtener_usuario_por_id(user_id):
+def obtener_usuario_por_id(id_usuario):
     try:
         connection = conectar()
         cursor = connection.cursor()
 
-        sql = "SELECT * FROM usuarios WHERE id = %s"
-        val = (user_id,)
+        sql = "SELECT * FROM usuarios WHERE id_usuario = %s"
+        val = (id_usuario,)
         cursor.execute(sql, val)
 
         usuario = cursor.fetchone()
@@ -74,7 +74,7 @@ def obtener_usuario_por_id(user_id):
         connection.close()
 
         if usuario:
-            return {'id': usuario[0], 'nombre': usuario[1], 'email': usuario[2], 'contraseña': usuario[3], 'fecha_creacion': usuario[4]}
+            return {'id_usuario': usuario[0], 'nombre': usuario[1], 'email': usuario[2], 'contraseña': usuario[3], 'fecha_creacion': usuario[4]}
         else:
             return None
     except Exception as e:
@@ -82,13 +82,13 @@ def obtener_usuario_por_id(user_id):
         return None
 
 # Función para actualizar un usuario por su ID en la base de datos
-def actualizar_usuario(user_id, nombre, email, contraseña):
+def actualizar_usuario(id_usuario, nombre, email, contraseña):
     try:
         connection = conectar()
         cursor = connection.cursor()
 
-        sql = "UPDATE usuarios SET nombre = %s, email = %s, contraseña = %s WHERE id = %s"
-        val = (nombre, email, contraseña, user_id)
+        sql = "UPDATE usuarios SET nombre = %s, email = %s, contraseña = %s WHERE id_usuario = %s"
+        val = (nombre, email, contraseña, id_usuario)
         cursor.execute(sql, val)
 
         connection.commit()
@@ -101,13 +101,13 @@ def actualizar_usuario(user_id, nombre, email, contraseña):
         return False
 
 # Función para eliminar un usuario por su ID de la base de datos
-def eliminar_usuario(user_id):
+def eliminar_usuario(id_usuario):
     try:
         connection = conectar()
         cursor = connection.cursor()
 
-        sql = "DELETE FROM usuarios WHERE id = %s"
-        val = (user_id,)
+        sql = "DELETE FROM usuarios WHERE id_usuario = %s"
+        val = (id_usuario,)
         cursor.execute(sql, val)
 
         connection.commit()

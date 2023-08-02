@@ -25,16 +25,16 @@ def crear_nuevo_usuario():
     else:
         return jsonify({'message': 'Error al crear usuario'}), 500
 
-@app.route('/users/<int:user_id>', methods=['GET'])
-def obtener_usuario_por_su_id(user_id):
-    usuario = datos.obtener_usuario_por_id(user_id)
+@app.route('/users/<int:id_usuario>', methods=['GET'])
+def obtener_usuario_por_su_id(id_usuario):
+    usuario = datos.obtener_usuario_por_id(id_usuario)
     if usuario:
         return jsonify(usuario), 200
     else:
         return jsonify({'message': 'Usuario no encontrado'}), 404
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
-def actualizar_usuario_por_su_id(user_id):
+@app.route('/users/<int:id_usuario>', methods=['PUT'])
+def actualizar_usuario_por_su_id(id_usuario):
     data = request.get_json()
     name = data.get('name')
     username=data.get('username')
@@ -42,14 +42,14 @@ def actualizar_usuario_por_su_id(user_id):
     password = data.get('password')
     datebirth=data.get('datebirth')
 
-    if datos.actualizar_usuario(user_id, name, username, email,password,datebirth):
+    if datos.actualizar_usuario(id_usuario, name, username, email,password,datebirth):
         return jsonify({'message': 'Usuario actualizado exitosamente'}), 200
     else:
         return jsonify({'message': 'Error al actualizar usuario'}), 500
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
-def eliminar_usuario_por_su_id(user_id):
-    if datos.eliminar_usuario(user_id):
+@app.route('/users/<int:id_usuario>', methods=['DELETE'])
+def eliminar_usuario_por_su_id(id_usuario):
+    if datos.eliminar_usuario(id_usuario):
         return jsonify({'message': 'Usuario eliminado exitosamente'}), 200
     else:
         return jsonify({'message': 'Error al eliminar usuario'}), 500
