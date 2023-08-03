@@ -117,4 +117,170 @@ def eliminar_usuario(id_usuario):
         return True
     except Exception as e:
         print("Error al eliminar usuario:", e)
+        return 
+#Funcion para obtener los servidores de los usuarios
+def obtener_servidor(id_usuario):
+    try:
+        connection = conectar()
+        cursor = connection.cursor()
+
+        # Consulta SQL para obtener los servidores del usuario con el ID especificado
+        sql = "SELECT servidor.* FROM `usuarios-servidor` AS us " \
+              "JOIN `servidor` AS servidor ON us.id_server = servidor.idservidor " \
+              "WHERE us.id_user = %s"
+
+        cursor.execute(sql, (id_usuario,))
+
+        # Obtener todos los registros de servidores del usuario
+        servidores = cursor.fetchall()
+
+        # Cerrar la conexión y el cursor
+        cursor.close()
+        connection.close()
+
+        return servidores
+
+    except Exception as e:
+        print("Error al obtener los servidores:", e)
+        return []
+
+def agregar_servidor(id_usuario, nombre_servidor):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Insertar el nuevo servidor en la tabla `servidor`
+        sql_insert_servidor = "INSERT INTO servidor (nombre) VALUES (%s)"
+        cursor.execute(sql_insert_servidor, (nombre_servidor,))
+        id_servidor_insertado = cursor.lastrowid
+
+        # Insertar la relación entre el usuario y el servidor en la tabla `usuarios-servidor`
+        sql_insert_relacion = "INSERT INTO `usuarios-servidor` (id_user, id_server) VALUES (%s, %s)"
+        cursor.execute(sql_insert_relacion, (id_usuario, id_servidor_insertado))
+
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+
+        return True
+    except Exception as e:
+        print(f"Error al agregar el servidor: {str(e)}")
         return False
+def obtener_servidor_por_nombre(nombre_servidor):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Realizar la consulta SQL para obtener el servidor por su nombre
+        sql = "SELECT * FROM servidor WHERE nombre = %s"
+        values = (nombre_servidor,)
+        cursor.execute(sql, values)
+
+        # Obtener el resultado de la consulta
+        servidor = cursor.fetchone()
+
+        # Cerrar la conexión con la base de datos
+        cursor.close()
+        conexion.close()
+
+        if servidor:
+            return {
+                'idservidor': servidor[0],
+                'nombre': servidor[1],
+                'descripcion':servidor[2]
+                # Puedes agregar más atributos del servidor aquí si es necesario
+            }
+        else:
+            return None
+    except Exception as e:
+        print("Error al obtener el servidor por nombre:", e)
+        return None
+
+def agregar_canales(nombre, id_servidor):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Consulta SQL para insertar el nuevo canal en la tabla 'canales'
+        consulta_canales = "INSERT INTO canales (nombre) VALUES (%s)"
+        valores_canales = (nombre,)
+        cursor.execute(consulta_canales, valores_canales)
+        canal_id = cursor.lastrowid  # Obtenemos el ID del canal recién insertado
+
+        # Consulta SQL para insertar la vinculación entre el canal y el servidor en la tabla 'id_canal_servidor'
+        consulta_id_canal_servidor = "INSERT INTO id_canal_servidor (idsv, idcanal) VALUES (%s, %s)"
+        valores_id_canal_servidor = (id_servidor, canal_id)
+        cursor.execute(consulta_id_canal_servidor, valores_id_canal_servidor)
+
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+        return True
+    except Exception as e:
+        print("Error al agregar el canal:", e)
+        conexion.rollback()
+        return False
+
+def obtener_canales_usuario_servidor(id_usuario, id_servidor):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Realizar la consulta SQL para obtener los canales del servidor que corresponden al usuario
+        sql = "SELECT c.* FROM canales AS c " \
+              "JOIN id_canal_servidor AS p ON c.idcanal = p.idcanal " \
+              "JOIN `usuarios-servidor` AS us ON p.idsv = us.id_server " \
+              "WHERE us.id_user = %s AND p.idsv = %s"
+        values = (id_usuario, id_servidor)
+        cursor.execute(sql, values)
+
+        # Obtener los resultados de la consulta
+        canales = []
+        for canal in cursor.fetchall():
+            canal_dict = {
+                'idcanal': canal[0],
+                'nombre': canal[1]
+                # Puedes agregar más atributos del canal aquí si es necesario
+            }
+            canales.append(canal_dict)
+
+        # Cerrar la conexión con la base de datos
+        cursor.close()
+        conexion.close()
+
+        return canales
+    except Exception as e:
+        print("Error al obtener los canales del servidor:", e)
+        return None
+def obtener_chats_usuarios_canal(id_canal):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+        # Realizar la consulta SQL para obtener los chats y usuarios del canal
+        sql = "SELECT u.img_perfil as imagen, u.name AS usuario, c.mensaje AS mensaje, c.fecha_hora AS fecha_hora " \
+              "FROM usuarios AS u " \
+              "JOIN `usuario-canales-chats` AS ucc ON u.id_usuario = ucc.iduser " \
+              "JOIN chat AS c ON ucc.idchat = c.idchat " \
+              "WHERE ucc.idcanal = %s"
+        values = (id_canal,)
+        cursor.execute(sql, values)
+
+        # Obtener los resultados de la consulta
+        chats_usuarios_canal = []
+        for (imagen,usuario, mensaje, fecha_hora) in cursor.fetchall():
+            chat_usuario_dict = {
+                'imagen':imagen,
+                'usuario': usuario,
+                'mensaje': mensaje,
+                'fecha_hora': fecha_hora,
+            }
+            chats_usuarios_canal.append(chat_usuario_dict)
+
+        # Cerrar la conexión con la base de datos
+        cursor.close()
+        conexion.close()
+
+        return chats_usuarios_canal
+    except Exception as e:
+        print("Error al obtener los chats y usuarios del canal:", e)
+        return None

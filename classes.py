@@ -10,3 +10,8 @@ class User:
 
     def verify_password(self, password):
         return self.password == password
+        
+class Servidor:
+    def __init__(self,id_servidor,nombre):
+        self.id_servidor=id_servidor
+        self.nombre=nombre
