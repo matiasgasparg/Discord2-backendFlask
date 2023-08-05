@@ -62,9 +62,10 @@ def login():
     user = next((user for user in datos.obtener_usuarios() if user['email'] == email and user['password'] == password), None)
 
     if user:
-        return jsonify({'message': 'Login successful'}), 200
+        return jsonify({'message': 'Login successful', 'idUsuario': user['id_usuario']}), 200
     else:
         return jsonify({'message': 'Invalid email or password'}), 401
+
 #Llamadas servidor
 @app.route('/users/servers/<int:id_usuario>', methods=['GET'])
 def obtener_user_servidor(id_usuario):

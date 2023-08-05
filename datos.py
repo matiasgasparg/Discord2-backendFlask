@@ -39,14 +39,15 @@ def obtener_usuarios():
         cursor.execute(sql)
 
         usuarios = []
-        for (id_usuario, name,username,email,password,datebirth) in cursor:
+        for (id_usuario, name,username,email,password,datebirth,img_perfil) in cursor:
             usuario = {
                 'id_usuario': id_usuario,
                 'name': name,
                 'username': username,
                 'email':email,
                 'password': password,
-                'datebirth': datebirth
+                'datebirth': datebirth,
+                'img_perfil':img_perfil
             }
             usuarios.append(usuario)
 
