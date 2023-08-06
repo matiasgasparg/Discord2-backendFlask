@@ -91,14 +91,6 @@ def agregar_servidor(id_usuario):
         return jsonify({'message': f'Servidor "{nombre}" agregado al usuario con ID {id_usuario} y la descripcion {descripcion}'}), 201
     else:
         return jsonify({'message': 'Error al agregar el servidor'}), 500
-#Busqueda servidor por nombre 
-@app.route('/servidores/<nombre_servidor>', methods=['GET'])
-def buscar_servidor(nombre_servidor):
-    servidor = datos.obtener_servidor_por_nombre(nombre_servidor)
-    if servidor:
-        return jsonify(servidor), 200
-    else:
-        return jsonify({'message': 'No se encuentra el servidor'}), 404
 
 
     
@@ -143,5 +135,16 @@ def enviar_mensaje(id_usuario, id_servidor, id_canal):
         return jsonify({'message': 'Mensaje enviado exitosamente'}), 201
     else:
         return jsonify({'message': 'Error al enviar el mensaje'}), 500
+@app.route('/servidores/<nombre_servidor>', methods=['GET'])
+def buscar_servidor(nombre_servidor):
+    servidor = datos.obtener_servidor_por_nombre(nombre_servidor)
+    if servidor:
+        cantidad_usuarios = datos.obtener_cantidad_usuarios_servidor(servidor['idservidor'])
+        servidor['cantidad_usuarios'] = cantidad_usuarios
+        return jsonify(servidor), 200
+    else:
+        return jsonify({'message': 'No se encuentra el servidor'}), 404
+
+
 if __name__ == '__main__':
     app.run(debug=True)

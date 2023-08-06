@@ -315,3 +315,19 @@ def enviar_mensaje(id_usuario, id_servidor, id_canal, mensaje):
     except Exception as e:
         print("Error al enviar el mensaje:", e)
         return False
+def obtener_cantidad_usuarios_servidor(id_servidor):
+    try:
+        connection = conectar()
+        cursor = connection.cursor()
+
+        sql = "SELECT COUNT(id_user) FROM `usuarios-servidor` WHERE id_server = %s"
+        cursor.execute(sql, (id_servidor,))
+        cantidad_usuarios = cursor.fetchone()[0]
+
+        cursor.close()
+        connection.close()
+
+        return cantidad_usuarios
+    except Exception as e:
+        print("Error al obtener la cantidad de usuarios del servidor:", e)
+        return 0
