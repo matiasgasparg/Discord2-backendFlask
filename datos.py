@@ -75,7 +75,7 @@ def obtener_usuario_por_id(id_usuario):
         connection.close()
 
         if usuario:
-            return {'id_usuario': usuario[0], 'nombre': usuario[1], 'email': usuario[2], 'contraseña': usuario[3], 'fecha_creacion': usuario[4]}
+            return {'id_usuario': usuario[0], 'name': usuario[1],'username':usuario[2],'email': usuario[3], 'contraseña': usuario[4], 'fecha_creacion': usuario[5],'img_perfil':usuario[6]}
         else:
             return None
     except Exception as e:
@@ -145,14 +145,14 @@ def obtener_servidor(id_usuario):
         print("Error al obtener los servidores:", e)
         return []
 
-def agregar_servidor(id_usuario, nombre_servidor):
+def agregar_servidor(id_usuario, nombre_servidor,descripcion):
     try:
         conexion = conectar()
         cursor = conexion.cursor()
 
         # Insertar el nuevo servidor en la tabla `servidor`
-        sql_insert_servidor = "INSERT INTO servidor (nombre) VALUES (%s)"
-        cursor.execute(sql_insert_servidor, (nombre_servidor,))
+        sql_insert_servidor = "INSERT INTO servidor (nombre,descripcion) VALUES (%s,%s)"
+        cursor.execute(sql_insert_servidor, (nombre_servidor,descripcion))
         id_servidor_insertado = cursor.lastrowid
 
         # Insertar la relación entre el usuario y el servidor en la tabla `usuarios-servidor`
@@ -249,7 +249,14 @@ def obtener_canales_usuario_servidor(id_usuario, id_servidor):
         cursor.close()
         conexion.close()
 
-        return canales
+        # Formatear los datos de los canales en el formato esperado
+    # Formatear los datos de los canales en el formato esperado
+        canales_formateados = [
+            {'idCanal': canal['idcanal'], 'nombre': canal['nombre']}  # Agrega más atributos si es necesario
+            for canal in canales
+        ]
+
+        return canales_formateados
     except Exception as e:
         print("Error al obtener los canales del servidor:", e)
         return None
@@ -258,7 +265,7 @@ def obtener_chats_usuarios_canal(id_canal):
         conexion = conectar()
         cursor = conexion.cursor()
         # Realizar la consulta SQL para obtener los chats y usuarios del canal
-        sql = "SELECT u.img_perfil as imagen, u.name AS usuario, c.mensaje AS mensaje, c.fecha_hora AS fecha_hora " \
+        sql = "SELECT u.img_perfil as imagen, u.username AS username, c.mensaje AS mensaje, c.fecha_hora AS fecha_hora " \
               "FROM usuarios AS u " \
               "JOIN `usuario-canales-chats` AS ucc ON u.id_usuario = ucc.iduser " \
               "JOIN chat AS c ON ucc.idchat = c.idchat " \
@@ -285,3 +292,26 @@ def obtener_chats_usuarios_canal(id_canal):
     except Exception as e:
         print("Error al obtener los chats y usuarios del canal:", e)
         return None
+
+def enviar_mensaje(id_usuario, id_servidor, id_canal, mensaje):
+    try:
+        connection = conectar()
+        cursor = connection.cursor()
+
+        # Insertar el mensaje en la tabla 'chat' con fecha y hora actuales
+        sql_insert_mensaje = "INSERT INTO chat (mensaje, fecha_hora) VALUES (%s, NOW())"
+        cursor.execute(sql_insert_mensaje, (mensaje,))
+        id_mensaje_insertado = cursor.lastrowid
+
+        # Insertar la relación entre el usuario, canal y mensaje en la tabla 'usuario-canales-chats'
+        sql_insert_relacion = "INSERT INTO `usuario-canales-chats` (iduser, idcanal, idchat) VALUES (%s, %s, %s)"
+        cursor.execute(sql_insert_relacion, (id_usuario, id_canal, id_mensaje_insertado))
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        print("Error al enviar el mensaje:", e)
+        return False

@@ -62,7 +62,14 @@ def login():
     user = next((user for user in datos.obtener_usuarios() if user['email'] == email and user['password'] == password), None)
 
     if user:
-        return jsonify({'message': 'Login successful', 'idUsuario': user['id_usuario']}), 200
+        # Agregar la imagen y el nombre del usuario al objeto JSON de respuesta
+        response_data = {
+            'message': 'Login successful',
+            'id_usuario': user['id_usuario'],
+            'img_perfil': user.get('img_perfil', ''),
+            'username': user.get('username', '')
+        }
+        return jsonify(response_data), 200
     else:
         return jsonify({'message': 'Invalid email or password'}), 401
 
@@ -79,8 +86,9 @@ def obtener_user_servidor(id_usuario):
 def agregar_servidor(id_usuario):
     data = request.get_json()
     nombre=data.get('nombre', '')
-    if datos.agregar_servidor(id_usuario, nombre):
-        return jsonify({'message': f'Servidor "{nombre}" agregado al usuario con ID {id_usuario}'}), 201
+    descripcion=data.get('descripcion','')
+    if datos.agregar_servidor(id_usuario, nombre,descripcion):
+        return jsonify({'message': f'Servidor "{nombre}" agregado al usuario con ID {id_usuario} y la descripcion {descripcion}'}), 201
     else:
         return jsonify({'message': 'Error al agregar el servidor'}), 500
 #Busqueda servidor por nombre 
@@ -120,10 +128,20 @@ def obtener_canales_usuario_servidor(id_usuario, id_servidor):
 @app.route('/canal/<int:id_canal>', methods=['GET'])
 def obtener_chats_usuarios_canal(id_canal):
     chats_usuarios_canal = datos.obtener_chats_usuarios_canal(id_canal)
-    if chats_usuarios_canal:
-        return jsonify(chats_usuarios_canal), 200
-    else:
-        return jsonify({'message': 'No se encontraron chats y usuarios para el canal'}), 404
+    return jsonify(chats_usuarios_canal), 200
 
+@app.route('/users/servers/<int:id_usuario>/<int:id_servidor>/canales/<int:id_canal>/messages', methods=['POST'])
+def enviar_mensaje(id_usuario, id_servidor, id_canal):
+    data = request.get_json()
+    mensaje = data.get('mensaje', '')
+    fecha_hora=data.get('fecha_Hora','')
+
+    if not mensaje:
+        return jsonify({'message': 'El mensaje no puede estar vacío'}), 400
+
+    if datos.enviar_mensaje(id_usuario, id_servidor, id_canal, mensaje):
+        return jsonify({'message': 'Mensaje enviado exitosamente'}), 201
+    else:
+        return jsonify({'message': 'Error al enviar el mensaje'}), 500
 if __name__ == '__main__':
     app.run(debug=True)
