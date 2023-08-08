@@ -358,6 +358,32 @@ def obtener_cantidad_usuarios_servidor(id_servidor):
     except Exception as e:
         print("Error al obtener la cantidad de usuarios del servidor:", e)
         return 0
+def existe_relacion_usuario_servidor(id_usuario, id_servidor):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Realizar la consulta SQL para verificar si ya existe una relación
+        sql = "SELECT iduserserver FROM `usuarios-servidor` WHERE id_user = %s AND id_server = %s"
+        values = (id_usuario, id_servidor)
+        cursor.execute(sql, values)
+
+        # Leer todos los resultados y almacenarlos en una variable, incluso si no se van a utilizar
+        resultados = cursor.fetchall()
+
+        # Cerrar el cursor y la conexión con la base de datos
+        cursor.close()
+        conexion.close()
+
+        if resultados:
+            return True  # Ya existe una relación entre el usuario y el servidor
+        else:
+            return False  # No existe una relación entre el usuario y el servidor
+    except Exception as e:
+        print("Error al verificar la relación usuario-servidor:", e)
+        return False
+
+
 def unirse_a_servidor(id_usuario, id_servidor):
     try:
         conexion = conectar()

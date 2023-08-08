@@ -155,10 +155,16 @@ def obtener_todos_los_servidores():
     return jsonify(servidores), 200
 @app.route('/users/servidores/<int:id_usuario>/<int:id_servidor>', methods=['POST'])
 def unirse_al_servidor(id_usuario, id_servidor):
+    try:
+        if datos.existe_relacion_usuario_servidor(id_usuario, id_servidor):
+            return jsonify({'message': 'El usuario ya está unido a este servidor'}), 409
 
-    if datos.unirse_a_servidor(id_usuario, id_servidor):
-        return jsonify({'message': 'Usuario unido exitosamente al servidor'}), 200
-    else:
-        return jsonify({'message': 'Error al unirse al servidor'}), 500
+        if datos.unirse_a_servidor(id_usuario, id_servidor):
+            return jsonify({'message': 'Usuario unido exitosamente al servidor'}), 200
+        else:
+            return jsonify({'message': 'Error al unirse al servidor'}), 500
+    except Exception as e:
+        return jsonify({'message': 'Error en el servidor'}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
