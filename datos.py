@@ -167,6 +167,33 @@ def agregar_servidor(id_usuario, nombre_servidor,descripcion):
     except Exception as e:
         print(f"Error al agregar el servidor: {str(e)}")
         return False
+# Función para obtener todos los usuarios de la base de datos
+def obtener_todos_los_servidores():
+    try:
+        connection = conectar()
+        cursor = connection.cursor()
+
+        sql = "SELECT * FROM servidor"
+        cursor.execute(sql)
+
+        servidores = []
+        for (idservidor,nombre,descripcion) in cursor:
+            servidor = {
+                'idservidor': idservidor,
+                'nombre': nombre,
+                'descripcion': descripcion,
+        
+            }
+            servidores.append(servidor)
+
+        cursor.close()
+        connection.close()
+
+        return servidores
+    except Exception as e:
+        print("Error al obtener los servidores:", e)
+        return []
+
 def obtener_servidor_por_nombre(nombre_servidor):
     try:
         conexion = conectar()
@@ -331,3 +358,21 @@ def obtener_cantidad_usuarios_servidor(id_servidor):
     except Exception as e:
         print("Error al obtener la cantidad de usuarios del servidor:", e)
         return 0
+def unirse_a_servidor(id_usuario, id_servidor):
+    try:
+        conexion = conectar()
+        cursor = conexion.cursor()
+
+        # Insertar la relación entre el usuario y el servidor en la tabla `usuarios-servidor`
+        sql_insert_relacion = "INSERT INTO `usuarios-servidor` (id_user, id_server) VALUES (%s, %s)"
+        cursor.execute(sql_insert_relacion, (id_usuario, id_servidor))
+
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+
+        return True
+    except Exception as e:
+        print("Error al unirse al servidor:", e)
+        conexion.rollback()
+        return False

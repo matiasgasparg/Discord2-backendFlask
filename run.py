@@ -145,6 +145,20 @@ def buscar_servidor(nombre_servidor):
     else:
         return jsonify({'message': 'No se encuentra el servidor'}), 404
 
+@app.route('/servidores', methods=['GET'])
+def obtener_todos_los_servidores():
+    servidores = datos.obtener_todos_los_servidores()
+    for servidor in servidores:
+        cantidad_usuarios = datos.obtener_cantidad_usuarios_servidor(servidor['idservidor'])
+        servidor['cantidad_usuarios'] = cantidad_usuarios
+    
+    return jsonify(servidores), 200
+@app.route('/users/servers/<int:id_usuario>/<int:id_servidor>', methods=['POST'])
+def unirse_al_servidor(id_usuario, id_servidor):
 
+    if datos.unirse_a_servidor(id_usuario, id_servidor):
+        return jsonify({'message': 'Usuario unido exitosamente al servidor'}), 200
+    else:
+        return jsonify({'message': 'Error al unirse al servidor'}), 500
 if __name__ == '__main__':
     app.run(debug=True)
