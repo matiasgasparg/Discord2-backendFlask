@@ -153,7 +153,7 @@ def obtener_todos_los_servidores():
         servidor['cantidad_usuarios'] = cantidad_usuarios
     
     return jsonify(servidores), 200
-@app.route('/users/servers/<int:id_usuario>/<int:id_servidor>', methods=['POST'])
+@app.route('/users/servidores/<int:id_usuario>/<int:id_servidor>', methods=['POST'])
 def unirse_al_servidor(id_usuario, id_servidor):
 
     if datos.unirse_a_servidor(id_usuario, id_servidor):
