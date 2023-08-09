@@ -2,6 +2,8 @@ from flask import Flask, jsonify, request
 from classes import User
 from flask_cors import CORS
 import datos 
+import mysql.connector
+from mysql.connector import errors
 app = Flask(__name__)
 CORS(app)  # Agregamos CORS a la aplicación
 
@@ -12,18 +14,27 @@ def obtener_todos_los_usuarios():
     usuarios = datos.obtener_usuarios()
     return jsonify(usuarios), 200
 
-@app.route('/users', methods=['POST'])
-def crear_nuevo_usuario():
-    data = request.get_json()
-    name = data.get('name')
-    username = data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    datebirth=data.get('datebirth')
-    if datos.crear_usuario(name,username,email,password,datebirth):
-        return jsonify({'message': 'Usuario creado exitosamente'}), 201
-    else:
-        return jsonify({'message': 'Error al crear usuario'}), 500
+@app.route('/users/create', methods=['POST'])
+def crear_usuario():
+    try:
+        data = request.json
+        name = data['name']
+        username = data['username']
+        email = data['email']
+        password = data['password']
+        datebirth = data['datebirth']
+
+        # Verificar si ya existe un usuario con el mismo username y/o email
+        if datos.verificar_usuario_existente(username,email):
+            return jsonify({'message': 'Ya existe un usuario con el mismo username y/o email'}), 400
+
+        # Si no existe, crear el usuario
+        if datos.crear_usuario(name, username, email, password, datebirth):
+            return jsonify({'message': 'Usuario creado exitosamente'}), 201
+        else:
+            return jsonify({'message': 'Error al crear usuario'}), 500
+    except Exception as e:
+        return jsonify({'message': 'Error en la solicitud'}), 400
 
 @app.route('/users/<int:id_usuario>', methods=['GET'])
 def obtener_usuario_por_su_id(id_usuario):

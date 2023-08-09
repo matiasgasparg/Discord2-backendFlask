@@ -402,3 +402,24 @@ def unirse_a_servidor(id_usuario, id_servidor):
         print("Error al unirse al servidor:", e)
         conexion.rollback()
         return False
+
+def verificar_usuario_existente(username, email):
+    try:
+        connection = conectar()
+        cursor = connection.cursor()
+
+        sql = "SELECT COUNT(*) FROM usuarios WHERE username = %s OR email = %s"
+        values = (username, email)
+        cursor.execute(sql, values)
+
+        result = cursor.fetchone()  # Lee el resultado de la consulta
+        count = result[0]  # Obtiene el valor del COUNT(*) en la consulta
+
+        cursor.close()
+        connection.close()
+
+        return count > 0  # Devuelve True si existe al menos un usuario con el mismo username o email
+
+    except Exception as e:
+        print("Error al verificar usuario existente:", e)
+        return False

@@ -1,6 +1,9 @@
 # modificar credenciales solo aqui
-credenciales = {'user': 'root',
-                'password': 'Patoganzo97',
-                'host': '127.0.0.1',
-                'database': 'discord2'}
-# icono
+
+credenciales = {
+    'user': 'uie9kse7nwg7rglw',
+    'password': 'AGB2fg3sKzVyU7Mp9iNV',
+    'host': 'buipqoyeffltjgzeyihg-mysql.services.clever-cloud.com',
+    'database': 'buipqoyeffltjgzeyihg',
+    'port': 3306
+}
