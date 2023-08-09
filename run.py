@@ -4,8 +4,23 @@ from flask_cors import CORS
 import datos 
 import mysql.connector
 from mysql.connector import errors
+from gunicorn.app.base import BaseApplication
+
 app = Flask(__name__)
 CORS(app)  # Agregamos CORS a la aplicación
+
+class GunicornApp(BaseApplication):
+    def __init__(self, app, options=None):
+        self.options = options or {}
+        self.application = app
+        super().__init__()
+
+    def load_config(self):
+        for key, value in self.options.items():
+            self.cfg.set(key, value)
+
+    def load(self):
+        return self.application
 
 users = []
 
@@ -178,4 +193,8 @@ def unirse_al_servidor(id_usuario, id_servidor):
         return jsonify({'message': 'Error en el servidor'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    options = {
+        'bind': '0.0.0.0:5000',
+        'workers': 4,  # Puedes ajustar este número según tus necesidades
+    }
+    GunicornApp(app, options).run()
