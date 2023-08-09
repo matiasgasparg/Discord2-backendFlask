@@ -178,4 +178,4 @@ def unirse_al_servidor(id_usuario, id_servidor):
         return jsonify({'message': 'Error en el servidor'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
