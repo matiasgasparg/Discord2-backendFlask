@@ -1,9 +1,9 @@
 # modificar credenciales solo aqui
 
 credenciales = {
-    'user': 'uie9kse7nwg7rglw',
-    'password': 'AGB2fg3sKzVyU7Mp9iNV',
+    'user': 'matiasgasparg',
+    'password': 'Patoganzo97',
     'host': 'buipqoyeffltjgzeyihg-mysql.services.clever-cloud.com',
-    'database': 'buipqoyeffltjgzeyihg',
+    'database': 'matiasgasparg.mysql.pythonanywhere-services.com',
     'port': 3306
 }
