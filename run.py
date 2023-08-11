@@ -177,5 +177,29 @@ def unirse_al_servidor(id_usuario, id_servidor):
     except Exception as e:
         return jsonify({'message': 'Error en el servidor'}), 500
 
+@app.route('/users/servers/<int:id_usuario>/canales/<int:id_canal>/messages/<int:id_mensaje>', methods=['PUT'])
+def editar_mensaje(id_usuario, id_canal, id_mensaje):
+    try:
+        data = request.get_json()
+        nuevo_mensaje = data.get('nuevo_mensaje', '')
+
+        if not nuevo_mensaje:
+            return jsonify({'message': 'El nuevo mensaje no puede estar vacío'}), 400
+
+        # Verificar si el mensaje pertenece al usuario y al canal especificados
+        mensajes_usuario_canal = datos.obtener_chats_usuarios_canal(id_canal)
+        mensaje_a_editar = next((mensaje for mensaje in mensajes_usuario_canal if mensaje['idchat'] == id_mensaje), None)
+
+        if mensaje_a_editar and mensaje_a_editar['id_usuario'] == id_usuario:
+            if datos.editar_mensaje(id_mensaje, nuevo_mensaje):
+                return jsonify({'message': 'Mensaje editado exitosamente'}), 200
+            else:
+                return jsonify({'message': 'Error al editar el mensaje'}), 500
+        else:
+            return jsonify({'message': 'No se puede editar el mensaje. No se encontró el mensaje o no tienes permiso'}), 403
+    except Exception as e:
+        return jsonify({'message': 'Error en el servidor'}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)

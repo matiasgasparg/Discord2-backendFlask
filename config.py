@@ -1,7 +1,7 @@
 # modificar credenciales solo aqui
 
 credenciales = {
-    'user': 'localhost',
+    'user': 'root',
     'password': 'Patoganzo97',
     'host': '127.0.0.1',
     'database': 'discord2',

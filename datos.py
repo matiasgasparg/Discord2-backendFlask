@@ -292,20 +292,23 @@ def obtener_chats_usuarios_canal(id_canal):
         conexion = conectar()
         cursor = conexion.cursor()
         # Realizar la consulta SQL para obtener los chats y usuarios del canal
-        sql = "SELECT u.img_perfil as imagen, u.username AS username, c.mensaje AS mensaje, c.fecha_hora AS fecha_hora " \
+        sql = "SELECT u.id_usuario AS id_usuario, u.img_perfil AS imagen, u.username AS username, c.idchat AS idchat, c.mensaje AS mensaje, c.fecha_hora AS fecha_hora " \
               "FROM usuarios AS u " \
               "JOIN `usuario-canales-chats` AS ucc ON u.id_usuario = ucc.iduser " \
               "JOIN chat AS c ON ucc.idchat = c.idchat " \
               "WHERE ucc.idcanal = %s"
+
         values = (id_canal,)
         cursor.execute(sql, values)
 
         # Obtener los resultados de la consulta
         chats_usuarios_canal = []
-        for (imagen,usuario, mensaje, fecha_hora) in cursor.fetchall():
+        for (id_usuario,imagen, usuario, idchat, mensaje, fecha_hora) in cursor.fetchall():
             chat_usuario_dict = {
-                'imagen':imagen,
+                'id_usuario':id_usuario,
+                'imagen': imagen,
                 'usuario': usuario,
+                'idchat': idchat,  # Agrega el ID del mensaje
                 'mensaje': mensaje,
                 'fecha_hora': fecha_hora,
             }
@@ -319,7 +322,6 @@ def obtener_chats_usuarios_canal(id_canal):
     except Exception as e:
         print("Error al obtener los chats y usuarios del canal:", e)
         return None
-
 def enviar_mensaje(id_usuario, id_servidor, id_canal, mensaje):
     try:
         connection = conectar()
@@ -422,4 +424,23 @@ def verificar_usuario_existente(username, email):
 
     except Exception as e:
         print("Error al verificar usuario existente:", e)
+        return False
+        
+# Función para editar un mensaje en la base de datos
+def editar_mensaje(id_mensaje, nuevo_contenido):
+    try:
+        connection = conectar()
+        cursor = connection.cursor()
+
+        sql = "UPDATE chat SET mensaje = %s WHERE idchat = %s"
+        values = (nuevo_contenido, id_mensaje)
+        cursor.execute(sql, values)
+
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return True
+    except Exception as e:
+        print("Error al editar el mensaje:", e)
         return False
