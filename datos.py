@@ -4,7 +4,7 @@ import config
 def conectar():
     """Conectar con la base de datos y devolver un obj conexion."""
     try:
-        conn = mysql.connector.connect(**config.credenciales)
+        conn = mysql.connector.connect(**config.credencialeslocal)
     except errors.DatabaseError as err:
         print("Error al conectar.", err)
     else:
