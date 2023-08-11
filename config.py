@@ -7,6 +7,7 @@ credencialeslocal = {
     'database': 'discord2',
     'port':"3306"
 }
+
 credenciales = {
     'user': 'matiasgasparg',
     'password': 'Patoganzo97',
