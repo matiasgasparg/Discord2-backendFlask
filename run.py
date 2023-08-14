@@ -1,11 +1,16 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,send_from_directory
 from classes import User
 from flask_cors import CORS
 import datos 
 import mysql.connector
 from mysql.connector import errors
+from werkzeug.utils import secure_filename
+import os
+
 app = Flask(__name__)
+
 CORS(app)  # Agregamos CORS a la aplicación
+app.config['UPLOAD_FOLDER'] = 'uploads'  # Carpeta donde se guardarán las imágenes
 
 users = []
 
@@ -47,16 +52,19 @@ def obtener_usuario_por_su_id(id_usuario):
 @app.route('/users/<int:id_usuario>', methods=['PUT'])
 def actualizar_usuario_por_su_id(id_usuario):
     data = request.get_json()
-    name = data.get('name')
-    username=data.get('username')
-    email = data.get('email')
-    password = data.get('password')
-    datebirth=data.get('datebirth')
+    field_to_update = data.get('field')  # Campo que se desea actualizar
+    value = data.get('value')  # Nuevo valor para el campo
 
-    if datos.actualizar_usuario(id_usuario, name, username, email,password,datebirth):
-        return jsonify({'message': 'Usuario actualizado exitosamente'}), 200
+    valid_fields = ['username', 'email', 'name', 'password']  # Lista de campos válidos
+
+    if field_to_update in valid_fields:
+        if datos.actualizar_usuario_por_campo(id_usuario, field_to_update, value):
+            return jsonify({'message': f'{field_to_update.capitalize()} actualizado exitosamente'}), 200
+        else:
+            return jsonify({'message': f'Error al actualizar {field_to_update}'}), 500
     else:
-        return jsonify({'message': 'Error al actualizar usuario'}), 500
+        return jsonify({'message': 'Campo no válido para actualización'}), 400
+
 
 @app.route('/users/<int:id_usuario>', methods=['DELETE'])
 def eliminar_usuario_por_su_id(id_usuario):
@@ -200,6 +208,29 @@ def editar_mensaje(id_usuario, id_canal, id_mensaje):
     except Exception as e:
         return jsonify({'message': 'Error en el servidor'}), 500
 
+@app.route('/upload/<int:user_id>', methods=['POST'])
+def upload_file(user_id):
+    if 'photo' not in request.files:
+        return jsonify({'message': 'No se proporcionó ninguna imagen'}), 400
 
+    photo = request.files['photo']
+    if photo.filename == '':
+        return jsonify({'message': 'Nombre de archivo vacío'}), 400
+
+    filename = f'{user_id}_{secure_filename(photo.filename)}'  # Genera un nombre único usando el ID del usuario
+    photo.save(os.path.join('uploads', filename))  # Guarda la imagen en la carpeta uploads
+
+    # Actualiza el campo image_url en la base de datos con el enlace de la imagen
+    img_perfil = f'http://127.0.0.1:5000/get_image/{filename}' 
+    datos.actualizar_usuario_por_campo(user_id, 'img_perfil', img_perfil)
+
+    return jsonify({'message': 'Imagen subida correctamente'}), 200
+
+
+
+@app.route('/get_image/<image_name>')
+def get_image(image_name):
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], image_name)
 if __name__ == '__main__':
     app.run(debug=True)
