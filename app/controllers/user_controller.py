@@ -113,7 +113,7 @@ class userController:
         photo.save(os.path.join('uploads', filename))  # Guarda la imagen en la carpeta uploads
 
         # Actualiza el campo image_url en la base de datos con el enlace de la imagen
-        img_perfil = f'https://matiasgasparg.pythonanywhere.com/users/get_image/{filename}' 
+        img_perfil = f'http://127.0.0.1:5000/users/get_image/{filename}' 
         User.update(user_id, 'img_perfil', img_perfil)
 
         return jsonify({'message': 'Imagen subida correctamente'}), 200
