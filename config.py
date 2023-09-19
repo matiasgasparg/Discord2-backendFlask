@@ -1,16 +1,15 @@
-# modificar credenciales solo aqui
+from dotenv import dotenv_values
 
-credencialeslocal = {
-    'user': 'root',
-    'password': 'Patoganzo97',
-    'host': '127.0.0.1',
-    'database': 'discord2',
-    'port':"3306"
-}
+class Config:
+    config = dotenv_values(".env")
+    
+    SECRET_KEY = config['SECRET_KEY']
+    SERVER_NAME = "127.0.0.1:5000"
+    DEBUG = True
 
-credenciales = {
-    'user': 'matiasgasparg',
-    'password': 'Patoganzo97',
-    'host': 'matiasgasparg.mysql.pythonanywhere-services.com',
-    'database': 'matiasgasparg$discord2'
-}
+    DATABASE_USERNAME = config['DATABASE_USERNAME']
+    DATABASE_PASSWORD = config['DATABASE_PASSWORD']
+    DATABASE_HOST = config['DATABASE_HOST']
+    DATABASE_NAME = config['DATABASE_NAME']
+    TEMPLATE_FOLDER = "templates/"
+    STATIC_FOLDER = "static_folder/"

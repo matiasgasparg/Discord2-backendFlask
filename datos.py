@@ -4,7 +4,7 @@ import config
 def conectar():
     """Conectar con la base de datos y devolver un obj conexion."""
     try:
-        conn = mysql.connector.connect(**config.credenciales)
+        conn = mysql.connector.connect(**config.credencialeslocal)
     except errors.DatabaseError as err:
         print("Error al conectar.", err)
     else:
@@ -82,14 +82,26 @@ def obtener_usuario_por_id(id_usuario):
         print("Error al obtener usuario:", e)
         return None
 
-# Función para actualizar un usuario por su ID en la base de datos
-def actualizar_usuario(id_usuario, nombre, email, contraseña):
+def actualizar_usuario_por_campo(id_usuario, campo, nuevo_valor):
     try:
         connection = conectar()
         cursor = connection.cursor()
 
-        sql = "UPDATE usuarios SET nombre = %s, email = %s, contraseña = %s WHERE id_usuario = %s"
-        val = (nombre, email, contraseña, id_usuario)
+        if campo == 'name':
+            sql = "UPDATE usuarios SET name = %s WHERE id_usuario = %s"
+        elif campo == 'username':
+            sql = "UPDATE usuarios SET username = %s WHERE id_usuario = %s"
+        elif campo == 'email':
+            sql = "UPDATE usuarios SET email = %s WHERE id_usuario = %s"
+        elif campo == 'password':  # Cambiado 'contraseña' a 'password'
+            sql = "UPDATE usuarios SET password = %s WHERE id_usuario = %s"
+        elif campo == 'img_perfil':
+            sql = "UPDATE usuarios SET img_perfil = %s WHERE id_usuario = %s"
+  
+        else:
+            raise ValueError("Campo no válido para actualización")
+
+        val = (nuevo_valor, id_usuario)
         cursor.execute(sql, val)
 
         connection.commit()
