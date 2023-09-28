@@ -25,7 +25,7 @@ class serverController:
             cant_user = Server.get_cant_user(server_data['idservidor'])
             server_data['cantidad_usuarios'] = cant_user
             servers.append(server_data)
-        return jsonify(servers), 200
+        return jsonify(servers), 201
     @classmethod
     def create(cls,id_usuario):
         """Create a new Server"""

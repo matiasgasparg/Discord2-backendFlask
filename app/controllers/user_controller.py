@@ -35,21 +35,27 @@ class userController:
 
     @classmethod
     def create(cls):
-        """Create a new User"""
-        data = request.json
-        username = data['username']
-        email = data['email']
-        print(email)
-        cls.validate_input_data(data)
-        
-        if User.duplicate(username,email):
-            raise duplicateError()
-            
-        new_user = User(**data)
+        try:
 
-        User.create(new_user)
+            """Create a new User"""
+            data = request.json
+            username = data['username']
+            email = data['email']
+            print(email)
+            cls.validate_input_data(data)
 
-        return jsonify ({'message': 'Usuario creado satisfactoriamente'}),200
+            if User.duplicate(username,email):
+                return jsonify({'message': 'Ya existe un usuario con el mismo username y/o email'}), 400     
+
+            new_user = User(**data)
+
+            if User.create(new_user):
+                return jsonify({'message': 'Usuario creado exitosamente'}), 201
+            else:
+                return jsonify({'message': 'Error al crear usuario'}), 500
+
+        except Exception as e:
+            return jsonify({'message': 'Error en la solicitud'}), 400    
     @classmethod
     def update(cls, id_usuario):
         """Update a User"""
@@ -77,9 +83,9 @@ class userController:
         if user:
             response_data = {
                 'message': 'Login successful',
-                'id_usuario': user.id_usuario,  # Corregido: Usar notación de punto en lugar de corchetes
-                'img_perfil': user.img_perfil,  # Corregido: Usar notación de punto en lugar de corchetes
-                'username': user.username  # Corregido: Usar notación de punto en lugar de corchetes
+                'id_usuario': user.id_usuario,  
+                'img_perfil': user.img_perfil,  
+                'username': user.username  
             }
             return jsonify(response_data), 200
         else:
