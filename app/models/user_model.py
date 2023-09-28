@@ -17,7 +17,7 @@ class User(User_date):
         password, datebirth, img_perfil 
         FROM usuarios WHERE id_usuario = %s"""
         params = id_usuario,
-        result = DatabaseConnection.fetch_one(query,database_name='discord2', params=params)
+        result = DatabaseConnection.fetch_one(query, params=params)
 
         if result is not None:
             return cls(**dict(zip(['id_usuario', 'name', 'username', 'email', 'password', 'datebirth', 'img_perfil'], result)))
@@ -32,7 +32,7 @@ class User(User_date):
         query = """SELECT id_usuario, name, username, email,
         password, datebirth, img_perfil 
         FROM usuarios"""
-        results = DatabaseConnection.fetch_all(query,database_name='discord2')
+        results = DatabaseConnection.fetch_all(query)
 
         users = []
         if results is not None:
@@ -42,17 +42,23 @@ class User(User_date):
 
     @classmethod
     def create(cls, user):
-        """Create a new user
-        Args:
-            - user (User): User object
-        """
-        query = """INSERT INTO usuarios (name, username, email,
-        password, datebirth, img_perfil) 
-        VALUES (%s, %s, %s, %s, %s, %s)"""
+        try:
 
-        params = user.name, user.username, user.email, \
-                 user.password, user.datebirth, user.img_perfil
-        DatabaseConnection.execute_query(query, database_name='discord2', params=params)
+            """Create a new user
+            Args:
+                - user (User): User object
+            """
+            query = """INSERT INTO usuarios (name, username, email,
+            password, datebirth, img_perfil) 
+            VALUES (%s, %s, %s, %s, %s, %s)"""
+
+            params = user.name, user.username, user.email, \
+                     user.password, user.datebirth, user.img_perfil
+            DatabaseConnection.execute_query(query, params=params)
+            return True
+        except Exception as e:
+            print("Error al crear usuario:", e)
+            return False
 
     @classmethod
     def update(cls,id_usuario, campo, nuevo_valor):
@@ -72,7 +78,7 @@ class User(User_date):
         print(nuevo_valor, id_usuario,query,campo)
         params = (nuevo_valor, id_usuario)
 
-        DatabaseConnection.execute_query(query,database_name='discord2',params=params)
+        DatabaseConnection.execute_query(query,params=params)
 
         return True
 
@@ -84,20 +90,20 @@ class User(User_date):
         """
         query = "DELETE FROM usuarios WHERE id_usuario = %s"
         params = id_usuario,
-        DatabaseConnection.execute_query(query, database_name='discord2', params=params)
+        DatabaseConnection.execute_query(query, params=params)
 
     @classmethod
     def exists(cls, id_usuario):
         query = "SELECT COUNT(*) FROM usuarios WHERE id_usuario = %s"
         params = (id_usuario,)
 
-        result = DatabaseConnection.fetch_one(query,database_name='discord2', params=params)
+        result = DatabaseConnection.fetch_one(query, params=params)
         return result[0] > 0 
     @classmethod
     def duplicate(cls,username,email):
         query = "SELECT COUNT(*) FROM usuarios WHERE username = %s OR email = %s"
         params = (username,email,)
-        result = DatabaseConnection.fetch_one(query, database_name='discord2',params=params)
+        result = DatabaseConnection.fetch_one(query,params=params)
         count = result[0]  # Obtiene el valor del COUNT(*) en la consulta
         return count > 0 # Devuelve True si existe al menos un usuario con el mismo username o email
 
