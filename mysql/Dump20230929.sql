@@ -28,7 +28,7 @@ CREATE TABLE `canales` (
   `idcanal` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idcanal`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=93 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `chat` (
   `mensaje` text,
   `fecha_hora` datetime DEFAULT NULL,
   PRIMARY KEY (`idchat`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=173 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -62,7 +62,7 @@ CREATE TABLE `id_canal_servidor` (
   KEY `fk_idcanal_idx` (`idcanal`),
   CONSTRAINT `fk_idcanal` FOREIGN KEY (`idcanal`) REFERENCES `canales` (`idcanal`),
   CONSTRAINT `fk_idsv` FOREIGN KEY (`idsv`) REFERENCES `servidor` (`idservidor`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `servidor` (
   `nombre` varchar(45) DEFAULT NULL,
   `descripcion` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idservidor`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,9 +97,9 @@ CREATE TABLE `usuario-canales-chats` (
   KEY `fk_canaltrio_idx` (`idcanal`),
   KEY `fk_idchat_idx` (`idchat`),
   CONSTRAINT `fk_canaltrio` FOREIGN KEY (`idcanal`) REFERENCES `canales` (`idcanal`),
-  CONSTRAINT `fk_idchat` FOREIGN KEY (`idchat`) REFERENCES `chat` (`idchat`),
+  CONSTRAINT `fk_idchat` FOREIGN KEY (`idchat`) REFERENCES `chat` (`idchat`) ON DELETE CASCADE,
   CONSTRAINT `fk_usertrio` FOREIGN KEY (`iduser`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,9 +116,9 @@ CREATE TABLE `usuarios` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
   `datebirth` date NOT NULL,
-  `img_perfil` varchar(45) DEFAULT NULL,
+  `img_perfil` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +137,7 @@ CREATE TABLE `usuarios-servidor` (
   KEY `fk_usuario_idx` (`id_user`),
   CONSTRAINT `fk_servidor` FOREIGN KEY (`id_server`) REFERENCES `servidor` (`idservidor`),
   CONSTRAINT `fk_usuario` FOREIGN KEY (`id_user`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -149,4 +149,4 @@ CREATE TABLE `usuarios-servidor` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-08-08 22:39:22
+-- Dump completed on 2023-09-29  0:17:14
