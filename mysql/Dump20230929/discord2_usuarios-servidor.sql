@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `discord2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `discord2`;
 -- MySQL dump 10.13  Distrib 8.0.33, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: discord2
@@ -31,7 +33,7 @@ CREATE TABLE `usuarios-servidor` (
   KEY `fk_usuario_idx` (`id_user`),
   CONSTRAINT `fk_servidor` FOREIGN KEY (`id_server`) REFERENCES `servidor` (`idservidor`),
   CONSTRAINT `fk_usuario` FOREIGN KEY (`id_user`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +42,7 @@ CREATE TABLE `usuarios-servidor` (
 
 LOCK TABLES `usuarios-servidor` WRITE;
 /*!40000 ALTER TABLE `usuarios-servidor` DISABLE KEYS */;
-INSERT INTO `usuarios-servidor` VALUES (1,5,24),(2,5,25),(3,4,26),(4,4,24),(5,4,27),(6,4,28),(7,4,29),(8,4,30),(9,4,31),(10,4,32),(11,4,33),(12,4,34),(13,4,35),(14,5,26),(15,5,27),(16,5,28),(17,5,29),(18,5,30),(19,5,31),(20,5,32),(21,5,33),(22,5,34),(23,10,36),(24,4,37),(25,4,38),(26,4,39),(27,4,40),(28,4,41),(29,8,42),(30,11,43),(31,11,24),(32,11,45),(33,11,46),(34,11,47),(35,11,48),(36,11,38),(37,11,40),(38,5,40),(39,5,49),(40,5,50),(41,18,51),(42,18,52),(43,18,25),(44,18,49),(45,18,31),(46,18,29),(47,18,28),(48,18,24),(49,18,30),(50,18,47),(51,18,27),(52,18,50),(53,18,53),(54,18,44),(55,18,26),(56,11,50),(57,11,25);
+INSERT INTO `usuarios-servidor` VALUES (1,5,24),(2,5,25),(3,4,26),(4,4,24),(5,4,27),(6,4,28),(7,4,29),(8,4,30),(9,4,31),(10,4,32),(11,4,33),(12,4,34),(13,4,35),(14,5,26),(15,5,27),(16,5,28),(17,5,29),(18,5,30),(19,5,31),(20,5,32),(21,5,33),(22,5,34),(23,10,36),(24,4,37),(25,4,38),(26,4,39),(27,4,40),(28,4,41),(29,8,42),(30,11,43),(31,11,24),(32,11,45),(33,11,46),(34,11,47),(35,11,48),(36,11,38),(37,11,40),(38,5,40),(39,5,49),(40,5,50),(41,18,51),(42,18,52),(43,18,25),(44,18,49),(45,18,31),(46,18,29),(47,18,28),(48,18,24),(49,18,30),(50,18,47),(51,18,27),(52,18,50),(53,18,53),(54,18,44),(55,18,26),(56,11,50),(57,11,25),(58,4,52),(59,4,25);
 /*!40000 ALTER TABLE `usuarios-servidor` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-28  0:39:23
+-- Dump completed on 2023-09-29  0:14:40
