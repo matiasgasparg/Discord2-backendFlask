@@ -1,7 +1,6 @@
 
 from ..models.server_model import Server
 from flask import request,jsonify
-# from decimal import Decimal
 from ..models.exceptions import userNotFound,CustomException,InvalidDataError,duplicateError
 
 class serverController:
@@ -52,12 +51,14 @@ class serverController:
         
     @classmethod
     def join(cls,id_usuario,id_servidor):
-        if Server.exists(id_usuario, id_servidor):
-            raise duplicateError
-        Server.join(id_usuario, id_servidor)
-        return {'message': 'Usuario unido exitosamente al servidor'}, 200
-   
-        
+        try:
+            if Server.exists(id_usuario, id_servidor):
+                return jsonify({'message': 'El usuario ya está unido a este servidor'}), 409
+            else:
+                Server.join(id_usuario, id_servidor)
+                return jsonify ({'message': 'Usuario unido exitosamente al servidor'}), 200
+        except Exception as e:
+            return jsonify({'message': 'Error en la solicitud'}), 400            
     @classmethod
     def get_channel_user(cls,id_usuario,id_servidor):
         channels = Server.get_channel_user(id_usuario,id_servidor)

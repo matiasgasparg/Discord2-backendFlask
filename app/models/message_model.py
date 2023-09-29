@@ -23,4 +23,10 @@ class Message(Message_date):
         params = nuevo_contenido,id_mensaje
         DatabaseConnection.execute_query(query,params=params)
         return True
+    @classmethod
+    def delete (cls,id_mensaje):
+        query = "DELETE FROM chat WHERE idchat = %s"
+        params= (id_mensaje,)
+        DatabaseConnection.execute_query(query,params=params)
+        return True
         

@@ -33,5 +33,16 @@ class messageController:
                 else:
                     return jsonify({'message': 'No se puede editar el mensaje. No se encontró el mensaje o no tienes permiso'}), 403
             
-    
+    @classmethod
+    def delete(cls,id_usuario,id_canal,id_mensaje):
+            # Verificar si el mensaje pertenece al usuario y al canal especificados
+            menssage_user_channel = Channel.get_chat_user(id_canal)
+            delete_message = next((message for message in menssage_user_channel if message['idchat'] == id_mensaje), None)
+
+            if delete_message and delete_message['id_usuario'] == id_usuario:
+                if Message.delete(id_mensaje):
+                    return jsonify({'message': 'Mensaje ha sido eliminado'}), 200
+                else:
+                    return jsonify({'message': 'No se puede eliminar el mensaje. No se encontró el mensaje o no tienes permiso'}), 403
+
     
