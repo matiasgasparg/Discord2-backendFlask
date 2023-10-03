@@ -32,8 +32,6 @@ Abre tu navegador y accede a http://localhost:5000 para interactuar con la aplic
 Regístrate o inicia sesión con tu cuenta.
 Crea servidores y canales para empezar a comunicarte con otros usuarios.
 Estructura del Proyecto
-arduino
-Copy code
 proyecto/
 │
 ├─ app/
